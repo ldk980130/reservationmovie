@@ -21,7 +21,7 @@ public class MemberRepository {
         em.remove(member);
     }
 
-    public Member findById(Long id) {
+    public Member findById(String id) {
         Member member = em.find(Member.class, id);
         return member;
     }

@@ -29,6 +29,7 @@ public class Reservation {
         member.getReservations().add(this);
     }
 
+    //== 생성 매서드 ==//
     public static Reservation create(Member member, ScreeningInfo screeningInfo, int adult, int minor) {
         Reservation reservation = new Reservation();
 

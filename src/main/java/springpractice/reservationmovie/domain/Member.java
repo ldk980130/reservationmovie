@@ -23,6 +23,7 @@ public class Member {
     @OneToMany(mappedBy = "member")
     private List<Reservation> reservations = new ArrayList<>();
 
+    //== 생성 매서드 ==//
     public static Member create(String id, String password,
                                 String number, String email, int age) {
         Member member = new Member();

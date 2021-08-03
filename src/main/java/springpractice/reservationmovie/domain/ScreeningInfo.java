@@ -28,6 +28,7 @@ public class ScreeningInfo {
         movie.getScreeningInfoList().add(this);
     }
 
+    //== 생성 매서드 ==//
     public static ScreeningInfo create(Movie movie, LocalTime startTime) {
         ScreeningInfo info = new ScreeningInfo();
         info.setMovie(movie);

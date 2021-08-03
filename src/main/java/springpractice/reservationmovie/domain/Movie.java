@@ -20,6 +20,7 @@ public class Movie {
     @OneToMany(mappedBy = "movie")
     List<ScreeningInfo> screeningInfoList = new ArrayList<>();
 
+    //== 생성 매서드 ==//
     public static Movie create(String title, int runningTime) {
         Movie movie = new Movie();
         movie.title = title;

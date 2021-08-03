@@ -11,7 +11,7 @@ public class Member {
 
     @Id
     @Column(name = "member_id")
-    private String id;
+    private String id; //id가 겹치면 DataIntegrityViolationException 발생
     private String password;
 
     private String number;

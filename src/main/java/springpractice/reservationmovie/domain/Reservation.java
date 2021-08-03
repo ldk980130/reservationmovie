@@ -18,7 +18,10 @@ public class Reservation {
     @OneToOne(fetch = FetchType.LAZY)
     private ScreeningInfo screeningInfo;
 
-    private int price;
+    private int totalPrice;
+
+    private int adult;
+    private int minor;
 
     //== 연관관게 편의 매서드 ==//
     private void setMember(Member member) {
@@ -26,14 +29,16 @@ public class Reservation {
         member.getReservations().add(this);
     }
 
-    public static Reservation create(Member member, ScreeningInfo screeningInfo) {
+    public static Reservation create(Member member, ScreeningInfo screeningInfo, int adult, int minor) {
         Reservation reservation = new Reservation();
 
         reservation.setMember(member);
         reservation.screeningInfo = screeningInfo;
 
-        if(member.getStatus() == Status.ADULT) reservation.price = 13000;
-        else reservation.price = 10000;
+        reservation.adult = adult;
+        reservation.minor = minor;
+
+        reservation.totalPrice = adult * 13000 + minor * 10000;
 
         return reservation;
     }

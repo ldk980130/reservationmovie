@@ -20,9 +20,6 @@ public class Member {
 
     private int age;
 
-    @Enumerated(EnumType.STRING)
-    private Status status;
-
     @OneToMany(mappedBy = "member")
     private List<Reservation> reservations = new ArrayList<>();
 
@@ -34,9 +31,6 @@ public class Member {
         member.number = number;
         member.email = email;
         member.age = age;
-
-        if(age>19) member.status = Status.ADULT;
-        else member.status = Status.MINOR;
 
         return member;
     }

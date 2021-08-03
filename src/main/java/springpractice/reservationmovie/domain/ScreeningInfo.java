@@ -36,4 +36,12 @@ public class ScreeningInfo {
         info.seatingCapacity = 10;
         return info;
     }
+
+    public void reserveSeat(int num) {
+
+        if (this.seatingCapacity < num) {
+            throw new IllegalStateException("자리가 없습니다.");
+        }
+        this.seatingCapacity -= num;
+    }
 }

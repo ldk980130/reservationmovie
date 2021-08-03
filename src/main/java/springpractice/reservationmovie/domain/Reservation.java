@@ -40,6 +40,8 @@ public class Reservation {
 
         reservation.totalPrice = adult * 13000 + minor * 10000;
 
+        reservation.screeningInfo.reserveSeat(adult + minor);
+
         return reservation;
     }
 }

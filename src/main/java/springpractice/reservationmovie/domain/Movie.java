@@ -10,7 +10,8 @@ import java.util.List;
 @Getter
 public class Movie {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "movie_id")
     private Long id;
 
@@ -21,6 +22,9 @@ public class Movie {
     List<ScreeningInfo> screeningInfoList = new ArrayList<>();
 
     //== 생성 매서드 ==//
+    protected Movie() {
+    }
+
     public static Movie create(String title, int runningTime) {
         Movie movie = new Movie();
         movie.title = title;

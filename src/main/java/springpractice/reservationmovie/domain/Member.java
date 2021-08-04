@@ -6,7 +6,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity @Getter
+@Entity
+@Getter
 public class Member {
 
     @Id
@@ -24,6 +25,9 @@ public class Member {
     private List<Reservation> reservations = new ArrayList<>();
 
     //== 생성 매서드 ==//
+    protected Member() {
+    }
+
     public static Member create(String id, String password,
                                 String number, String email, int age) {
         Member member = new Member();

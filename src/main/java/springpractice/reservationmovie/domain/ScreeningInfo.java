@@ -5,7 +5,8 @@ import lombok.Getter;
 import javax.persistence.*;
 import java.time.LocalTime;
 
-@Entity @Getter
+@Entity
+@Getter
 public class ScreeningInfo {
 
     @Id
@@ -32,6 +33,9 @@ public class ScreeningInfo {
     }
 
     //== 생성 매서드 ==//
+    protected ScreeningInfo() {
+    }
+
     public static ScreeningInfo create(Movie movie, LocalTime startTime) {
         ScreeningInfo info = new ScreeningInfo();
         info.setMovie(movie);

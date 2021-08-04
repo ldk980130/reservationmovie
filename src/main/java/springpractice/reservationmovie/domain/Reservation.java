@@ -4,10 +4,12 @@ import lombok.Getter;
 
 import javax.persistence.*;
 
-@Entity @Getter
+@Entity
+@Getter
 public class Reservation {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     @Column(name = "reservation_id")
     private Long id;
 
@@ -30,6 +32,9 @@ public class Reservation {
     }
 
     //== 생성 매서드 ==//
+    protected Reservation() {
+    }
+
     public static Reservation create(Member member, ScreeningInfo screeningInfo, int adult, int minor) {
         Reservation reservation = new Reservation();
 

@@ -15,7 +15,7 @@ public class ScreeningInfo {
 
     private int seatingCapacity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "movie_id")
     private Movie movie;
 

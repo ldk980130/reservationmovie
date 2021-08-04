@@ -19,12 +19,15 @@ public class ScreeningInfo {
     @JoinColumn(name = "movie_id")
     private Movie movie;
 
+    private String movieTitle;
+
     private LocalTime startTime;
     private LocalTime endTime;
 
     //== 연관관게 편의 매서드 ==//
     private void setMovie(Movie movie) {
         this.movie = movie;
+        this.movieTitle = movie.getTitle();
         movie.getScreeningInfoList().add(this);
     }
 

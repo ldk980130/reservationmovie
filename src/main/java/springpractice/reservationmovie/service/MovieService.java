@@ -17,24 +17,26 @@ public class MovieService {
     private final MovieRepository movieRepository;
 
     @Transactional
-    public void resister(Movie movie) {
+    public Long resister(Movie movie) {
         movieRepository.save(movie);
+        return movie.getId();
     }
 
     @Transactional
-    public void delete(Movie movie) {
+    public Long delete(Movie movie) {
         movieRepository.delete(movie);
+        return movie.getId();
     }
 
-    public Movie searchById(Long id) {
+    public Movie findOne(Long id) {
         return movieRepository.findById(id);
     }
 
-    public Optional<Movie> searchByTitle(String title) {
+    public Optional<Movie> findByTitle(String title) {
         return movieRepository.findByTitle(title);
     }
 
-    public List<Movie> searchAll() {
+    public List<Movie> findAll() {
         return movieRepository.findAll();
     }
 }

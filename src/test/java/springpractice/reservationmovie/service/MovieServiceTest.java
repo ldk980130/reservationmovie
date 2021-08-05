@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import springpractice.reservationmovie.domain.EnumRate;
 import springpractice.reservationmovie.domain.Movie;
 
 import java.util.List;
@@ -22,13 +23,26 @@ public class MovieServiceTest {
     @Autowired MovieService movieService;
 
     @Test
-    public void 영화등록_이름검색() throws Exception {
+    public void 영화등록_검색() throws Exception {
         //given
-        Movie movie = Movie.create("정글 크루즈", 120);
+        Movie movie = Movie.create("정글 크루즈", 120, EnumRate.FIFTEEN);
 
         //when
-        movieService.resister(movie);
-        Movie findMovie = movieService.searchByTitle("정글 크루즈").get();
+        Long id = movieService.resister(movie);
+        Movie findMovie = movieService.findOne(id);
+
+        //then
+        assertThat(findMovie).isEqualTo(movie);
+    }
+
+    @Test
+    public void 영화이름검색() throws Exception {
+        //given
+        Movie movie = Movie.create("정글 크루즈", 120, EnumRate.FIFTEEN);
+
+        //when
+        Long id = movieService.resister(movie);
+        Movie findMovie = movieService.findByTitle("정글 크루즈").get();
 
         //then
         assertThat(findMovie).isEqualTo(movie);
@@ -37,13 +51,13 @@ public class MovieServiceTest {
     @Test
     public void 영화전체검색() throws Exception {
         //given
-        Movie movie1 = Movie.create("정글 크루즈", 120);
-        Movie movie2 = Movie.create("랑종", 120);
+        Movie movie1 = Movie.create("정글 크루즈", 120, EnumRate.FIFTEEN);
+        Movie movie2 = Movie.create("랑종", 120, EnumRate.FIFTEEN);
 
         //when
         movieService.resister(movie1);
         movieService.resister(movie2);
-        List<Movie> movies = movieService.searchAll();
+        List<Movie> movies = movieService.findAll();
 
         //then
         assertThat(movies.size()).isEqualTo(2);
@@ -52,14 +66,14 @@ public class MovieServiceTest {
     @Test
     public void 영화삭제() throws Exception {
         //given
-        Movie movie1 = Movie.create("정글 크루즈", 120);
-        Movie movie2 = Movie.create("랑종", 120);
+        Movie movie1 = Movie.create("정글 크루즈", 120, EnumRate.FIFTEEN);
+        Movie movie2 = Movie.create("랑종", 120, EnumRate.FIFTEEN);
 
         //when
         movieService.resister(movie1);
         movieService.resister(movie2);
         movieService.delete(movie1);
-        List<Movie> movies = movieService.searchAll();
+        List<Movie> movies = movieService.findAll();
 
         //then
         assertThat(movies.size()).isEqualTo(1);

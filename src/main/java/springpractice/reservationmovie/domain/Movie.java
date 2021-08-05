@@ -16,7 +16,11 @@ public class Movie {
     private Long id;
 
     private String title;
+
     private int runningTime;
+
+    @Enumerated(EnumType.STRING)
+    private EnumRate rate;
 
     @OneToMany(mappedBy = "movie")
     List<ScreeningInfo> screeningInfoList = new ArrayList<>();
@@ -25,10 +29,11 @@ public class Movie {
     protected Movie() {
     }
 
-    public static Movie create(String title, int runningTime) {
+    public static Movie create(String title, int runningTime, EnumRate rate) {
         Movie movie = new Movie();
         movie.title = title;
         movie.runningTime = runningTime;
+        movie.rate = rate;
         return movie;
     }
 

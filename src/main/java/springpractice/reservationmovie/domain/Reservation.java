@@ -3,7 +3,8 @@ package springpractice.reservationmovie.domain;
 import lombok.Getter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -17,7 +18,7 @@ public class Reservation {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private ScreeningInfo screeningInfo;
 
     private int adultCount;
@@ -27,7 +28,7 @@ public class Reservation {
 
     private ReservationStatus status;
 
-    private LocalDateTime time;
+    private String time;
 
     //== 연관관게 편의 매서드 ==//
     private void setMember(Member member) {
@@ -42,8 +43,9 @@ public class Reservation {
     public static Reservation create(Member member, ScreeningInfo screeningInfo,
                                      int adultCount, int childCount) {
 
-        boolean isCreatable = screeningInfo.checkRemnant(adultCount + childCount);
-        if (isCreatable) throw new IllegalStateException();
+        if (!screeningInfo.checkRemnant(adultCount + childCount)) {
+            throw new IllegalStateException();
+        }
 
         Reservation reservation = new Reservation();
 
@@ -53,11 +55,13 @@ public class Reservation {
         reservation.adultCount = adultCount;
         reservation.childCount = childCount;
 
+        screeningInfo.subtractRemnant(adultCount + childCount);
+
         reservation.totalPrice = screeningInfo.getAdultPrice() * adultCount
                 + screeningInfo.getChildPrice() * childCount;
 
         reservation.status = ReservationStatus.RESERVED;
-        reservation.time = LocalDateTime.now();
+        reservation.time = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
 
         reservation.id = System.currentTimeMillis()+"";
 

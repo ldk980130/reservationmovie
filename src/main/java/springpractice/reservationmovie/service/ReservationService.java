@@ -22,6 +22,7 @@ public class ReservationService {
         return reservation.getId();
     }
 
+    @Transactional
     public String cancel(Reservation reservation) {
        return reservation.remove();
     }

@@ -16,24 +16,26 @@ public class ScreeningInfoService {
     private final ScreeningInfoRepository screeningInfoRepository;
 
     @Transactional
-    public void resister(ScreeningInfo screeningInfo) {
+    public Long resister(ScreeningInfo screeningInfo) {
         screeningInfoRepository.save(screeningInfo);
+        return screeningInfo.getId();
     }
 
     @Transactional
-    public void delete(ScreeningInfo screeningInfo) {
+    public Long delete(ScreeningInfo screeningInfo) {
         screeningInfoRepository.delete(screeningInfo);
+        return screeningInfo.getId();
     }
 
-    public ScreeningInfo searchById(Long id) {
+    public ScreeningInfo findOne(Long id) {
         return screeningInfoRepository.findById(id);
     }
 
-    public List<ScreeningInfo> searchByTitle(String title) {
+    public List<ScreeningInfo> findByTitle(String title) {
         return screeningInfoRepository.findByTitle(title);
     }
 
-    public List<ScreeningInfo> searchAll() {
+    public List<ScreeningInfo> findAll() {
         return screeningInfoRepository.findAll();
     }
 }

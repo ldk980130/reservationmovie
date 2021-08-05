@@ -14,7 +14,7 @@ public class ScreeningInfo {
     @Column(name = "screening_info_id")
     private Long id;
 
-    private int seatingCapacity;
+    private int remnant;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "movie_id")
@@ -24,6 +24,9 @@ public class ScreeningInfo {
 
     private LocalTime startTime;
     private LocalTime endTime;
+
+    private int adultPRice;
+    private int childPrice;
 
     //== 연관관게 편의 매서드 ==//
     private void setMovie(Movie movie) {
@@ -41,15 +44,25 @@ public class ScreeningInfo {
         info.setMovie(movie);
         info.startTime = startTime;
         info.endTime = info.startTime.plusMinutes(movie.getRunningTime());
-        info.seatingCapacity = 10;
+        info.remnant = 10;
         return info;
     }
 
-    public void reserveSeat(int num) {
-
-        if (this.seatingCapacity < num) {
-            throw new IllegalStateException("자리가 없습니다.");
+    /**
+     * 비지니스 로직
+     */
+    public boolean checkRemnant(int count) {
+        if (count > this.remnant) {
+            return false;
         }
-        this.seatingCapacity -= num;
+        return true;
+    }
+
+    public void addRemnant(int count) {
+        this.remnant += count;
+    }
+
+    public void subtractRemnant(int count) {
+        this.remnant -= count;
     }
 }

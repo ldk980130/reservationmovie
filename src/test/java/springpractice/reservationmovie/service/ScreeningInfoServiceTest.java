@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import springpractice.reservationmovie.domain.EnumRate;
 import springpractice.reservationmovie.domain.Movie;
 import springpractice.reservationmovie.domain.ScreeningInfo;
 
@@ -24,78 +25,100 @@ public class ScreeningInfoServiceTest {
     @Autowired ScreeningInfoService screeningInfoService;
 
     @Test
-    public void 상영정보저장_이름검색() throws Exception {
+    public void 정보생성_검색() throws Exception {
         //given
-        ScreeningInfo screeningInfo1 = ScreeningInfo.create(
-                Movie.create("정글 크루즈", 120),
+        ScreeningInfo info = ScreeningInfo.create(
+                Movie.create("asdf", 120, EnumRate.FIFTEEN),
                 LocalTime.of(13, 30));
-        ScreeningInfo screeningInfo2 = ScreeningInfo.create(
-                Movie.create("정글 크루즈", 120),
-                LocalTime.of(15, 30));
-        ScreeningInfo screeningInfo3 = ScreeningInfo.create(
-                Movie.create("랑종", 120),
-                LocalTime.of(15, 30));
 
         //when
-        screeningInfoService.resister(screeningInfo1);
-        screeningInfoService.resister(screeningInfo2);
-        screeningInfoService.resister(screeningInfo3);
-        List<ScreeningInfo> findInfos = screeningInfoService.searchByTitle("정글 크루즈");
+        Long id = screeningInfoService.resister(info);
+        ScreeningInfo findInfo = screeningInfoService.findOne(id);
 
         //then
-        assertThat(findInfos.size()).isEqualTo(2);
+        assertThat(findInfo).isEqualTo(info);
     }
 
     @Test
-    public void 상영정보전체검색_삭제() throws Exception {
+    public void 정보전체검색_삭제() throws Exception {
         //given
-        ScreeningInfo screeningInfo1 = ScreeningInfo.create(
-                Movie.create("정글 크루즈", 120),
+        ScreeningInfo info1 = ScreeningInfo.create(
+                Movie.create("asdf", 120, EnumRate.FIFTEEN),
                 LocalTime.of(13, 30));
-        ScreeningInfo screeningInfo2 = ScreeningInfo.create(
-                Movie.create("정글 크루즈", 120),
-                LocalTime.of(15, 30));
-        ScreeningInfo screeningInfo3 = ScreeningInfo.create(
-                Movie.create("랑종", 120),
-                LocalTime.of(15, 30));
+        ScreeningInfo info2 = ScreeningInfo.create(
+                Movie.create("asdf", 120, EnumRate.FIFTEEN),
+                LocalTime.of(13, 30));
+        screeningInfoService.resister(info1);
+        screeningInfoService.resister(info2);
 
         //when
-        screeningInfoService.resister(screeningInfo1);
-        screeningInfoService.resister(screeningInfo2);
-        screeningInfoService.resister(screeningInfo3);
-        screeningInfoService.delete(screeningInfo2);
-        List<ScreeningInfo> screeningInfos = screeningInfoService.searchAll();
+        int beforeDelete = screeningInfoService.findAll().size();
+        screeningInfoService.delete(info1);
+        int afterDelete = screeningInfoService.findAll().size();
 
         //then
-        assertThat(screeningInfos.size()).isEqualTo(2);
+        assertThat(afterDelete).isEqualTo(beforeDelete-1);
     }
 
     @Test
-    public void 예약인원만큼좌석감소() throws Exception {
+    public void 이름검색() throws Exception {
         //given
-        ScreeningInfo screeningInfo = ScreeningInfo.create(
-                Movie.create("정글 크루즈", 120),
+        ScreeningInfo info1 = ScreeningInfo.create(
+                Movie.create("asdf", 120, EnumRate.FIFTEEN),
+                LocalTime.of(13, 30));
+        ScreeningInfo info2 = ScreeningInfo.create(
+                Movie.create("asdf", 120, EnumRate.FIFTEEN),
+                LocalTime.of(13, 30));
+        screeningInfoService.resister(info1);
+        screeningInfoService.resister(info2);
+
+        //when
+        List<ScreeningInfo> list = screeningInfoService.findByTitle("asdf");
+
+        //then
+        assertThat(list.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void 좌석수감소() throws Exception {
+        //given
+        ScreeningInfo info = ScreeningInfo.create(
+                Movie.create("asdf", 120, EnumRate.FIFTEEN),
                 LocalTime.of(13, 30));
 
         //when
-        screeningInfo.reserveSeat(9);
+        info.subtractRemnant(4);
 
         //then
-        assertThat(screeningInfo.getSeatingCapacity()).isEqualTo(1);
+        assertThat(info.getRemnant()).isEqualTo(6);
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void 예약인원좌석초과() throws Exception {
+    @Test
+    public void 좌석수증가() throws Exception {
         //given
-        ScreeningInfo screeningInfo = ScreeningInfo.create(
-                Movie.create("정글 크루즈", 120),
+        ScreeningInfo info = ScreeningInfo.create(
+                Movie.create("asdf", 120, EnumRate.FIFTEEN),
                 LocalTime.of(13, 30));
 
         //when
-        screeningInfo.reserveSeat(11);
+        info.subtractRemnant(4);
+        info.addRemnant(4);
 
         //then
-        System.out.println("실패");
+        assertThat(info.getRemnant()).isEqualTo(10);
     }
 
+    @Test
+    public void 좌석수검증() throws Exception {
+        //given
+        ScreeningInfo info = ScreeningInfo.create(
+                Movie.create("asdf", 120, EnumRate.FIFTEEN),
+                LocalTime.of(13, 30));
+
+        //when
+        boolean result = info.checkRemnant(11);
+
+        //then
+        assertThat(result).isEqualTo(false);
+    }
 }

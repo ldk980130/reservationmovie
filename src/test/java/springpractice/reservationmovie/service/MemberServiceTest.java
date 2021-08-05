@@ -50,4 +50,20 @@ public class MemberServiceTest {
         assertThat(all.size()).isEqualTo(2);
     }
 
+    @Test
+    public void 회원삭제() throws Exception {
+        //given
+        Member member1 = Member.create("이동규", 24);
+        Member member2 = Member.create("김철수", 24);
+        memberService.join(member1);
+        memberService.join(member2);
+
+        //when
+        memberService.leave(member1);
+        List<Member> all = memberService.findAll();
+
+        //then
+        assertThat(all.size()).isEqualTo(1);
+    }
+
 }

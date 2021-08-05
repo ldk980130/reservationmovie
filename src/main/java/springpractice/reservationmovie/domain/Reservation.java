@@ -1,6 +1,7 @@
 package springpractice.reservationmovie.domain;
 
 import lombok.Getter;
+import net.bytebuddy.utility.RandomString;
 
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
@@ -17,7 +18,7 @@ public class Reservation {
 
     //=고유아이디 생성 매서드=//
     private String createUniqueId(Long memberId) {
-        return System.currentTimeMillis() + "" + memberId;
+        return System.currentTimeMillis() + new RandomString(4).nextString();
     }
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -80,7 +81,7 @@ public class Reservation {
     public String remove() {
         this.status = ReservationStatus.CANCEL;
         this.getScreeningInfo()
-                .addRemnant(this.getAdultCount() + this.childCount);
+                .addRemnant(this.adultCount+ this.childCount);
         return this.getId();
     }
 }

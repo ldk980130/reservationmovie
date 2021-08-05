@@ -3,15 +3,15 @@ package springpractice.reservationmovie.domain;
 import lombok.Getter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 public class Reservation {
 
     @Id
-    @GeneratedValue
     @Column(name = "reservation_id")
-    private Long id;
+    private String id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
@@ -20,10 +20,14 @@ public class Reservation {
     @OneToOne(fetch = FetchType.LAZY)
     private ScreeningInfo screeningInfo;
 
+    private int adultCount;
+    private int childCount;
+
     private int totalPrice;
 
-    private int adult;
-    private int minor;
+    private ReservationStatus status;
+
+    private LocalDateTime time;
 
     //== 연관관게 편의 매서드 ==//
     private void setMember(Member member) {
@@ -35,19 +39,38 @@ public class Reservation {
     protected Reservation() {
     }
 
-    public static Reservation create(Member member, ScreeningInfo screeningInfo, int adult, int minor) {
+    public static Reservation create(Member member, ScreeningInfo screeningInfo,
+                                     int adultCount, int childCount) {
+
+        boolean isCreatable = screeningInfo.checkRemnant(adultCount + childCount);
+        if (isCreatable) throw new IllegalStateException();
+
         Reservation reservation = new Reservation();
 
         reservation.setMember(member);
         reservation.screeningInfo = screeningInfo;
 
-        reservation.adult = adult;
-        reservation.minor = minor;
+        reservation.adultCount = adultCount;
+        reservation.childCount = childCount;
 
-        reservation.totalPrice = adult * 13000 + minor * 10000;
+        reservation.totalPrice = screeningInfo.getAdultPrice() * adultCount
+                + screeningInfo.getChildPrice() * childCount;
 
-        reservation.screeningInfo.reserveSeat(adult + minor);
+        reservation.status = ReservationStatus.RESERVED;
+        reservation.time = LocalDateTime.now();
+
+        reservation.id = System.currentTimeMillis()+"";
 
         return reservation;
+    }
+
+    /**
+     * 비지니스 로직
+     */
+    public String remove() {
+        this.status = ReservationStatus.CANCEL;
+        this.getScreeningInfo()
+                .addRemnant(this.getAdultCount() + this.childCount);
+        return this.getId();
     }
 }

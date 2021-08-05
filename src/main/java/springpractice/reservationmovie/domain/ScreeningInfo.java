@@ -25,7 +25,7 @@ public class ScreeningInfo {
     private LocalTime startTime;
     private LocalTime endTime;
 
-    private int adultPRice;
+    private int adultPrice;
     private int childPrice;
 
     //== 연관관게 편의 매서드 ==//
@@ -44,6 +44,8 @@ public class ScreeningInfo {
         info.setMovie(movie);
         info.startTime = startTime;
         info.endTime = info.startTime.plusMinutes(movie.getRunningTime());
+        info.adultPrice = 13000;
+        info.childPrice = 10000;
         info.remnant = 10;
         return info;
     }

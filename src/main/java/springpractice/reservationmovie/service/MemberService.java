@@ -16,20 +16,22 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public void join(Member member) {
+    public Long join(Member member) {
         memberRepository.save(member);
+        return member.getId();
     }
 
     @Transactional
-    public void leave(Member member) {
+    public Long leave(Member member) {
         memberRepository.delete(member);
+        return member.getId();
     }
 
-    public Member searchById(String id) {
+    public Member findOne(Long id) {
         return memberRepository.findById(id);
     }
 
-    public List<Member> searchAll() {
+    public List<Member> findAll() {
         return memberRepository.findAll();
     }
 }

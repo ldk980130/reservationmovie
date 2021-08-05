@@ -10,15 +10,11 @@ import java.util.List;
 @Getter
 public class Member {
 
-    @Id
+    @Id @GeneratedValue
     @Column(name = "member_id")
-    private String id; //id가 겹치면 DataIntegrityViolationException 발생
-    private String password;
+    private Long id;
 
-    private String number;
-
-    private String email;
-
+    private String name;
     private int age;
 
     @OneToMany(mappedBy = "member")
@@ -28,15 +24,10 @@ public class Member {
     protected Member() {
     }
 
-    public static Member create(String id, String password,
-                                String number, String email, int age) {
+    public static Member create(String name, int age) {
         Member member = new Member();
-        member.id = id;
-        member.password = password;
-        member.number = number;
-        member.email = email;
+        member.name = name;
         member.age = age;
-
         return member;
     }
 }

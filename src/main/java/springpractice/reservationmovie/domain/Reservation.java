@@ -5,6 +5,7 @@ import lombok.Getter;
 import javax.persistence.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 @Entity
 @Getter
@@ -13,6 +14,11 @@ public class Reservation {
     @Id
     @Column(name = "reservation_id")
     private String id;
+
+    //=고유아이디 생성 매서드=//
+    private String createUniqueId(Long memberId) {
+        return System.currentTimeMillis() + "" + memberId;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "member_id")
@@ -63,7 +69,7 @@ public class Reservation {
         reservation.status = ReservationStatus.RESERVED;
         reservation.time = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
 
-        reservation.id = System.currentTimeMillis()+"";
+        reservation.id = reservation.createUniqueId(member.getId());
 
         return reservation;
     }

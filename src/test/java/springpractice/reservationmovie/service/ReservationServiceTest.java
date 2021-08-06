@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import springpractice.reservationmovie.domain.*;
 
 import java.time.LocalTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.Assert.*;
@@ -88,4 +89,26 @@ public class ReservationServiceTest {
         assertThat(screeningInfo.getRemnant()).isEqualTo(10);
     }
 
+    @Test
+    public void 회원별예약조회() throws Exception {
+        //given
+        Member member1 = Member.create("이동규", 24);
+        Member member2 = Member.create("철수", 21);
+        Movie movie1 = Movie.create("랑종", 120, EnumRate.FIFTEEN);
+        Movie movie2 = Movie.create("정글 크루즈", 119, EnumRate.TWELVE);
+        ScreeningInfo screeningInfo1 = ScreeningInfo.create(movie1, LocalTime.now());
+        ScreeningInfo screeningInfo2 = ScreeningInfo.create(movie2, LocalTime.now());
+
+        //when
+        Reservation reservation1 = Reservation.create(member1, screeningInfo1, 1, 1);
+        Reservation reservation2 = Reservation.create(member1, screeningInfo2, 1, 1);
+        Reservation reservation3 = Reservation.create(member2, screeningInfo1, 1, 1);
+        reservationService.reserve(reservation1);
+        reservationService.reserve(reservation2);
+        reservationService.reserve(reservation3);
+
+        //then
+        List<Reservation> reservations = reservationService.showMemberReservations(member1);
+        assertThat(reservations.size()).isEqualTo(2);
+    }
 }

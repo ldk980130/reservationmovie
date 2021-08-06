@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import springpractice.reservationmovie.domain.Member;
 import springpractice.reservationmovie.domain.Reservation;
+import springpractice.reservationmovie.domain.ScreeningInfo;
 import springpractice.reservationmovie.repository.ReservationRepository;
 
 import java.util.List;
@@ -17,7 +18,8 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
 
     @Transactional
-    public String reserve(Reservation reservation) {
+    public String reserve(Member member, ScreeningInfo screeningInfo, int adultCount, int childCount) {
+        Reservation reservation = Reservation.create(member, screeningInfo, adultCount, childCount);
         reservationRepository.save(reservation);
         return reservation.getId();
     }

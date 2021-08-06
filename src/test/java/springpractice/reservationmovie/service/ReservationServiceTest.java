@@ -30,11 +30,10 @@ public class ReservationServiceTest {
         ScreeningInfo screeningInfo = ScreeningInfo.create(movie, LocalTime.now());
 
         //when
-        Reservation reservation = Reservation.create(member, screeningInfo, 1, 1);
-        String id = reservationService.reserve(reservation);
+        String id = reservationService.reserve(member, screeningInfo, 1, 1);
 
         //then
-        assertThat(reservationService.findOne(id)).isEqualTo(reservation);
+        assertThat(reservationService.findOne(id)).isNotNull();
     }
 
     @Test
@@ -45,13 +44,10 @@ public class ReservationServiceTest {
         ScreeningInfo screeningInfo = ScreeningInfo.create(movie, LocalTime.now());
 
         //when
-        Reservation reservation1 = Reservation.create(member, screeningInfo, 1, 1);
-        Reservation reservation2 = Reservation.create(member, screeningInfo, 1, 1);
-        reservationService.reserve(reservation1);
-        reservationService.reserve(reservation2);
+        reservationService.reserve(member, screeningInfo, 1, 1);
+        reservationService.reserve(member, screeningInfo, 1, 2);
 
         //then
-        assertThat(reservation1.getId()).isNotEqualTo(reservation2.getId());
     }
 
     @Test
@@ -63,10 +59,8 @@ public class ReservationServiceTest {
         ScreeningInfo screeningInfo = ScreeningInfo.create(movie, LocalTime.now());
 
         //when
-        Reservation reservation1 = Reservation.create(member1, screeningInfo, 1, 1);
-        Reservation reservation2 = Reservation.create(member2, screeningInfo, 1, 1);
-        reservationService.reserve(reservation1);
-        reservationService.reserve(reservation2);
+        reservationService.reserve(member1, screeningInfo, 1, 1);
+        reservationService.reserve(member2, screeningInfo, 1, 1);
 
         //then
         assertThat(reservationService.findAll().size()).isEqualTo(2);
@@ -78,14 +72,15 @@ public class ReservationServiceTest {
         Member member = Member.create("이동규", 24);
         Movie movie = Movie.create("랑종", 120, EnumRate.FIFTEEN);
         ScreeningInfo screeningInfo = ScreeningInfo.create(movie, LocalTime.now());
-        Reservation reservation = Reservation.create(member, screeningInfo, 1, 1);
-        String id = reservationService.reserve(reservation);
+
+        String id = reservationService.reserve(member, screeningInfo, 1, 1);
 
         //when
-        Reservation findReservation = reservationService.findOne(id);reservationService.cancel(findReservation);
+        Reservation findReservation = reservationService.findOne(id);
+        reservationService.cancel(findReservation);
 
         //then
-        assertThat(reservation.getStatus()).isEqualTo(ReservationStatus.CANCEL);
+        assertThat(findReservation.getStatus()).isEqualTo(ReservationStatus.CANCEL);
         assertThat(screeningInfo.getRemnant()).isEqualTo(10);
     }
 
@@ -100,12 +95,9 @@ public class ReservationServiceTest {
         ScreeningInfo screeningInfo2 = ScreeningInfo.create(movie2, LocalTime.now());
 
         //when
-        Reservation reservation1 = Reservation.create(member1, screeningInfo1, 1, 1);
-        Reservation reservation2 = Reservation.create(member1, screeningInfo2, 1, 1);
-        Reservation reservation3 = Reservation.create(member2, screeningInfo1, 1, 1);
-        reservationService.reserve(reservation1);
-        reservationService.reserve(reservation2);
-        reservationService.reserve(reservation3);
+        reservationService.reserve(member1, screeningInfo1, 1, 1);
+        reservationService.reserve(member1, screeningInfo2, 1, 1);
+        reservationService.reserve(member2, screeningInfo1, 1, 1);
 
         //then
         List<Reservation> reservations = reservationService.showMemberReservations(member1);

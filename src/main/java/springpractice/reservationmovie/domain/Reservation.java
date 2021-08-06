@@ -79,6 +79,10 @@ public class Reservation {
      * 비지니스 로직
      */
     public String remove() {
+        if (this.status == ReservationStatus.CANCEL) {
+            throw new IllegalStateException("이미 취소된 예약입니다.");
+        }
+
         this.status = ReservationStatus.CANCEL;
         this.getScreeningInfo()
                 .addRemnant(this.adultCount+ this.childCount);

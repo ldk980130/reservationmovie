@@ -6,7 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import springpractice.reservationmovie.domain.Member;
 import springpractice.reservationmovie.domain.Reservation;
 import springpractice.reservationmovie.domain.ScreeningInfo;
+import springpractice.reservationmovie.repository.MemberRepository;
 import springpractice.reservationmovie.repository.ReservationRepository;
+import springpractice.reservationmovie.repository.ScreeningInfoRepository;
 
 import java.util.List;
 
@@ -16,17 +18,23 @@ import java.util.List;
 public class ReservationService {
 
     private final ReservationRepository reservationRepository;
+    private final MemberRepository memberRepository;
+    private final ScreeningInfoRepository screeningInfoRepository;
 
     @Transactional
-    public String reserve(Member member, ScreeningInfo screeningInfo, int adultCount, int childCount) {
+    public String reserve(Long memberId, Long infoId, int adultCount, int childCount) {
+        Member member = memberRepository.findById(memberId);
+        ScreeningInfo screeningInfo = screeningInfoRepository.findById(infoId);
+
         Reservation reservation = Reservation.create(member, screeningInfo, adultCount, childCount);
         reservationRepository.save(reservation);
         return reservation.getId();
     }
 
     @Transactional
-    public String cancel(Reservation reservation) {
-       return reservation.remove();
+    public void cancel(String id) {
+        Reservation reservation = reservationRepository.findById(id);
+        reservation.remove();
     }
 
     public Reservation findOne(String id) {
@@ -37,7 +45,8 @@ public class ReservationService {
         return reservationRepository.findAll();
     }
 
-    public List<Reservation> showMemberReservations(Member member) {
-        return reservationRepository.findByMember(member);
+    public List<Reservation> showMemberReservations(Long memberId) {
+        Member member = memberRepository.findById(memberId);
+        return member.getReservations();
     }
 }

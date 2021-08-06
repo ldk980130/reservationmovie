@@ -60,6 +60,21 @@ public class ReservationTest {
         assertThat(reservation.getStatus()).isEqualTo(ReservationStatus.CANCEL);
     }
 
+    @Test(expected = IllegalStateException.class)
+    public void 취소된예약또취소() throws Exception {
+        //given
+        Member member = Member.create("이동규", 24);
+        Movie movie = Movie.create("랑종", 120, EnumRate.FIFTEEN);
+        ScreeningInfo screeningInfo = ScreeningInfo.create(movie, LocalTime.now());
+        Reservation reservation = Reservation.create(member, screeningInfo, 4, 1);
+
+        //when
+        reservation.remove();
+
+        //then
+        reservation.remove();
+    }
+
     @Test
     public void 같은상영정보_다른예매() throws Exception {
         //given

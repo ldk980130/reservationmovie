@@ -26,10 +26,6 @@ public class ReservationRepository {
         return em.find(Reservation.class, id);
     }
 
-    public List<Reservation> findByMember(Member member) {
-        return member.getReservations();
-    }
-
     public List<Reservation> findAll() {
         return em.createQuery("select r from Reservation r",Reservation.class)
                 .getResultList();
